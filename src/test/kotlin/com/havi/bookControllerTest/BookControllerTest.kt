@@ -31,5 +31,19 @@ class BookControllerTest {
     @Test
     fun Book_MVC_test() {
         // FIXME
+        val book = Book("Spring Boot Book", LocalDateTime.now())
+
+        given(bookService.getBookList())
+            .willReturn(Collections.singletonList(book))
+
+        mvc.perform(get("/books"))
+            // HTTP 상태값이 200인지 테스트
+            .andExpect(status().isOk)
+            // 반환되는 뷰의 이름이 "book"인지 테스트
+            .andExpect(view().name("book"))
+            // 모델 프로퍼티 중 'bookList'라는 프로퍼티가 존재하는지 테스트
+            .andExpect(model().attributeExists("bookList"))
+            // 위에서 말한 프로퍼티 속에 book 객체가 있는지를 테스트
+            .andExpect(model().attribute("bookList", contains(book)))
     }
 }
